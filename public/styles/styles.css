@@ -1,0 +1,35 @@
+body {
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Inter", sans-serif;
+    font-weight: 900;
+}
+
+ul {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.form-group {
+    padding: 1.5rem;
+}
+
+.padding {
+    padding: 0.5rem;
+    padding-bottom: 0;
+}
+
+.box {
+    background-color: rgb(224, 224, 224);
+    border-radius: 5px;
+    box-shadow: 1px 1px #888888;
+    margin: 2rem;
+}
