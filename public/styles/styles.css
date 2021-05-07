@@ -33,3 +33,15 @@ ul {
     box-shadow: 1px 1px #888888;
     margin: 2rem;
 }
+
+.text-box {
+    background-color: rgb(224, 224, 224);
+    border-radius: 5px;
+    box-shadow: 1px 1px #888888;
+    margin: 2rem;
+    width: max-content;
+}
+
+.btn {
+    margin: 10px;
+}
