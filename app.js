@@ -1,12 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
-
-var multer = require("multer");
-var upload = multer({
-  dest: "uploads/",
-});
-var cpUpload = upload.fields([{ name: "avatar", maxCount: 8 }]);
+const axios = require("axios");
 
 const ejs = require("ejs");
 let mysql = require("mysql");
@@ -22,17 +17,6 @@ app.use(
   })
 );
 
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
-
-var upload = multer({ storage: storage });
-
 let connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_UID,
@@ -47,68 +31,123 @@ connection.connect(function (err) {
   console.log("Connected to the MySQL server.");
 });
 
+const services = [
+  {
+    service: "Phone Answering Services",
+    subservice: "24 Hour Answering Service",
+    serviceUrl: "Phone-Answering-Services",
+    subserviceUrl: "24-Hour-Answering-Service",
+  },
+  {
+    service: "Phone Answering Services",
+    subservice: "After Hours Answering Service",
+    serviceUrl: "Phone-Answering-Services",
+    subserviceUrl: "After-Hours-Answering-Service",
+  },
+];
+
 app.get("/", (req, res) => {
-  res.redirect("user");
+  res.render("home");
 });
 
-app.get("/user", (req, res) => {
-  res.render("user", { data: 0, message: "" });
+app.get("/home", (req, res) => {
+  res.render("home");
+});
+
+app.get("/custRep", (req, res) => {
+  res.render("custRep", { message: "" });
 });
 
 app.get("/login", (req, res) => {
-  res.render("login");
+  res.render("login", { message: "" });
 });
 
 app.get("/supervisor", (req, res) => {
   if (isLoggedIn) {
-    res.render("supervisor", { message: "" });
+    res.render("supervisor", { services: services });
   }
-  res.render("login");
+  res.render("login", { message: "Please log in to view this page" });
+});
+
+app.get("/supervisor/:param1/:param2", (req, res) => {
+  var service = req.params.param1;
+  var ss = req.params.param2;
+  var subservice = ss.replace(/-/g, " ");
+  console.log(subservice);
+  connection.query(
+    "SELECT * FROM Requests WHERE SubService=" + connection.escape(subservice),
+    (error, result) => {
+      // console.log(result);
+      res.render("services", { message: result });
+    }
+  );
 });
 
 app.post("/login", (req, res) => {
-  var username = req.body.username;
+  var email = req.body.emailID;
   var password = req.body.password;
-  if ((username = "admin" && password == "root")) {
-    isLoggedIn = true;
-    res.redirect("supervisor");
-  }
+  connection.query(
+    "SELECT * FROM Users WHERE EmailID=" +
+      connection.escape(email) +
+      "AND Password=" +
+      connection.escape(password),
+    (error, result) => {
+      if (error) throw error;
+      else {
+        console.log(result);
+        if (result.length == 0) {
+          res.render("login", {
+            message: "Wrong Email ID or Password. Please try again.",
+          });
+        } else {
+          if (result[0].Type === "S") {
+            isLoggedIn = true;
+            res.render("supervisor", { services: services });
+          } else if (result[0].Type === "CR") {
+            isLoggedIn = true;
+            res.render("custRep");
+          }
+        }
+      }
+    }
+  );
 });
 
-app.post("/user", (req, res) => {
+app.post("/custRep", (req, res) => {
   var name = req.body.name;
   var email = req.body.email;
   var phno = req.body.phno;
   var company = req.body.company;
   var service = req.body.service;
   var subservice = req.body.subservice;
-  var reqdesc = req.body.reqdesc;
+  var reqDesc = req.body.reqdesc;
   connection.query(
-    "INSERT INTO FormData (Name, PhNo, EmailID, Company, Service, SubService, Request) VALUES (?)",
-    [[name, phno, email, company, service, subservice, reqdesc]],
+    "INSERT INTO Requests (Name, PhNo, EmailID, Company, Service, SubService, Request) VALUES (?)",
+    [[name, phno, email, company, service, subservice, reqDesc]],
     (error, result) => {
       if (error) throw error;
       else {
-        console.log(result.insertId);
-        res.render("user", {
+        // await axios
+        //   .post("/mlModelUrl", {
+        //     requestID: result.insertId,
+        //     requestText: reqDesc,
+        //   })
+        //   .then(function (response) {
+        //     console.log(response);
+        //     //TODO: 1. ID the top 3 sentiments. 2. Insert sentiments and classify as urgent/not.
+        //   })
+        //   .catch(function (error) {
+        //     console.log(error);
+        //   });
+        // console.log(result.insertId);
+        res.render("custRep", {
           message:
             "Your query has been submitted. Our representatives will get back to you shortly. The request ID is:" +
             result.insertId,
-          data: 1,
         });
       }
     }
   );
-});
-
-app.post("/supervisor", upload.array("file", 10), (req, res) => {
-  console.log(req.files);
-  let file = "";
-  req.files.forEach((ele) => {
-    var name = ele.filename.toString();
-    file = file.concat(name);
-  });
-  res.render("supervisor", { message: "Uploaded successfully" });
 });
 
 app.listen(3000, function () {

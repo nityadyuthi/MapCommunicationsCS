@@ -13,6 +13,10 @@ h6 {
     font-weight: 900;
 }
 
+p {
+    font-weight: 500;
+}
+
 ul {
     font-size: 1rem;
     font-weight: 700;
@@ -44,4 +48,8 @@ ul {
 
 .btn {
     margin: 10px;
+}
+
+.card {
+    padding: 5px;
 }

@@ -1,23 +1,26 @@
 <%- include("partials/header") -%>
-<% if (message) { %>
-<div class="text-box padding">
-    <h3><%= message %></h3>
-</div>
-<% } %>
-<% if (message === "") { %>
 <div class="box">
-    <form action="" method="post" style="padding: 1.5rem;" enctype="multipart/form-data">
-        <h4>Please upload the data set file</h4>
-        <div class="padding row form-group">
-            <div class="col-md-4">
-                <label for="number">Images</label>
-                <input type="file" class="form-control" id="file" name="file" multiple
-                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
-            </div>
-        </div>
-        <button type="submit" class="btn btn-dark">Submit</button>
-    </form>
+  <p>
+    <% for (const i in services) { %>
+    <a
+      class="btn btn-dark"
+      data-toggle="collapse"
+      href="#phone-answering-service"
+      role="button"
+      aria-expanded="false"
+      aria-controls="phone-answering-service"
+    >
+      <%= services[i].service %>
+    </a>
+    <% } %>
+  </p>
+  <div class="collapse padding" id="phone-answering-service">
+    <a
+      href="/supervisor/phone-answering-service/24-Hour-Answering-Service"
+      class="card card-body"
+    >
+      24 Hour Answering Service
+    </a>
+  </div>
 </div>
-<% } %>
-</div>
-</div>
+<%- include("partials/footer") -%>
