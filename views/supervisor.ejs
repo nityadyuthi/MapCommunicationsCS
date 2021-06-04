@@ -1,26 +1,302 @@
-<%- include("partials/header") -%>
-<div class="box">
-  <p>
-    <% for (const i in services) { %>
-    <a
-      class="btn btn-dark"
-      data-toggle="collapse"
-      href="#phone-answering-service"
-      role="button"
-      aria-expanded="false"
-      aria-controls="phone-answering-service"
+<%- include("partials/header-retrain") -%>
+<div class="padding m-3">
+  <nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <a
+        class="nav-item nav-link active"
+        id="phone-answering-services-tab"
+        data-toggle="tab"
+        href="#phone-answering-services"
+        ><h5>Phone Answering Services</h5></a
+      >
+      <a
+        class="nav-item nav-link"
+        id="call-center-services-tab"
+        data-toggle="tab"
+        href="#call-center-services"
+        ><h5>Call Center Services</h5></a
+      >
+      <a
+        class="nav-item nav-link"
+        id="virtual-receptionist-services-tab"
+        data-toggle="tab"
+        href="#virtual-receptionist-services"
+        ><h5>Virtual Receptionist Services</h5></a
+      >
+      <a
+        class="nav-item nav-link"
+        id="alarm-monitoring-services"
+        href="/supervisor/alarm-monitoring-services/"
+        ><h5>Alarm Monitoring Services</h5></a
+      >
+    </div>
+  </nav>
+  <!-- Phone Ans Services -->
+  <div class="tab-content">
+    <div
+      class="tab-pane fade show active padding"
+      id="phone-answering-services"
     >
-      <%= services[i].service %>
-    </a>
-    <% } %>
-  </p>
-  <div class="collapse padding" id="phone-answering-service">
-    <a
-      href="/supervisor/phone-answering-service/24-Hour-Answering-Service"
-      class="card card-body"
-    >
-      24 Hour Answering Service
-    </a>
+      <table
+        class="table table-hover table-bordered m-3"
+        style="margin-right: 30px"
+      >
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Sub Request</th>
+            <th scope="col">Number of Requests Raised</th>
+            <th scope="col">Number of Requests flagged as Urgent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>
+              <a
+                href="/supervisor/phone-answering-services/24-hour-answering-service"
+                >24 Hour Answering Service</a
+              >
+            </td>
+            <td>12</td>
+            <td>1</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>
+              <a
+                href="/supervisor/phone-answering-services/after-hours-answering-service"
+                >After Hours Answering Service</a
+              >
+            </td>
+            <td>6</td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>
+              <a
+                href="/supervisor/phone-answering-services/bilingual-answering-service"
+                >Bilingual Answering Service</a
+              >
+            </td>
+            <td>16</td>
+            <td>12</td>
+          </tr>
+          <tr>
+            <th scope="row">4</th>
+            <td>
+              <a
+                href="/supervisor/phone-answering-services/call-overflow-answering-service"
+                >Call Overflow Answering Service</a
+              >
+            </td>
+            <td>10</td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <th scope="row">5</th>
+            <td>
+              <a
+                href="/supervisor/phone-answering-services/message-dispatch-service"
+                >Message Dispatch Service</a
+              >
+            </td>
+            <td>12</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <th scope="row">6</th>
+            <td>
+              <a
+                href="/supervisor/phone-answering-services/on-call-answering-service"
+                >On-Call Answering Service</a
+              >
+            </td>
+            <td>8</td>
+            <td>6</td>
+          </tr>
+          <tr>
+            <th scope="row">7</th>
+            <td>
+              <a
+                href="/supervisor/phone-answering-services/RSVP-answering-service"
+                >RSVP Answering Service</a
+              >
+            </td>
+            <td>5</td>
+            <td>3</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Call Center Services -->
+    <!-- 
+Technical Support and Help Desk Services
+Virtual Call Center Services
+Whistleblower Hotline Services -->
+    <div class="tab-pane fade padding m-4" id="call-center-services">
+      <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Sub Request</th>
+            <th scope="col">Number of Requests Raised</th>
+            <th scope="col">Number of Requests flagged as Urgent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>
+              <a
+                href="/supervisor/call-center-services/24-hour-call-center-services"
+                >24 Hour Call Center Services</a
+              >
+            </td>
+            <td>3</td>
+            <td>1</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>
+              <a
+                href="/supervisor/call-center-services/bpo-call-center-services"
+                >BPO Call Center Services</a
+              >
+            </td>
+            <td>10</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>
+              <a
+                href="/supervisor/call-center-services/business-continuity-call-center-services"
+                >Business Continuity Call Center Services</a
+              >
+            </td>
+            <td>12</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <th scope="row">4</th>
+            <td>
+              <a
+                href="/supervisor/call-center-services/customer-support-call-center-services"
+                >Customer Support Call Center Services</a
+              >
+            </td>
+            <td>14</td>
+            <td>6</td>
+          </tr>
+          <tr>
+            <th scope="row">5</th>
+            <td>
+              <a
+                href="/supervisor/call-center-services/direct-response-call-center-services"
+                >Direct Response Call Center Services</a
+              >
+            </td>
+            <td>1</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <th scope="row">6</th>
+            <td>
+              <a
+                href="/supervisor/call-center-services/disaster-recovery-emergency-response"
+                >Disaster Recovery/Emergency Response</a
+              >
+            </td>
+            <td>3</td>
+            <td>1</td>
+          </tr>
+          <tr>
+            <th scope="row">7</th>
+            <td>
+              <a
+                href="/supervisor/call-center-services/inbound-call-center-services"
+                >Inbound Call Center Services</a
+              >
+            </td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <th scope="row">8</th>
+            <td>
+              <a
+                href="/supervisor/call-center-services/order-taking-call-center-services"
+              >
+                Order Taking Call Center Services</a
+              >
+            </td>
+            <td>1</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <th scope="row">9</th>
+            <td>
+              <a
+                href="/supervisor/call-center-services/product-recall-call-center-services"
+              >
+                Order Taking Call Center Services</a
+              >
+            </td>
+            <td>15</td>
+            <td>1</td>
+          </tr>
+          <tr>
+            <th scope="row">10</th>
+            <td>
+              <a
+                href="/supervisor/call-center-services/sales-lead-capture-and-qualification-services"
+              >
+                Sales Lead Capture and Qualification Services</a
+              >
+            </td>
+            <td>6</td>
+            <td>2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Virtual Receptionist Service  -->
+    <div class="tab-pane fade padding" id="virtual-receptionist-services">
+      <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Sub Request</th>
+            <th scope="col">Number of Requests Raised</th>
+            <th scope="col">Number of Requests flagged as Urgent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td><a href="/supervisor">24 Hour Answering Service</a></td>
+            <td>18</td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td><a href="/supervisor">After Hours Answering Service</a></td>
+            <td>6</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>
+              <a href="/supervisor">Bilingual Answering Service</a>
+            </td>
+            <td>4</td>
+            <td>1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 <%- include("partials/footer") -%>

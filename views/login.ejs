@@ -1,52 +1,34 @@
-<%- include("partials/header") -%> <% if (message) { %>
-<div class="box">
-  <form action="/login" method="POST">
-    <h3 class="padding">Please Log In</h3>
-    <div class="form-group">
-      <label for="emailID">Email ID</label>
-      <input
-        type="emailID"
-        class="form-control"
-        name="emailID"
-        placeholder="abc@xyz.com"
-      />
-    </div>
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input
-        type="password"
-        class="form-control"
-        name="password"
-        placeholder="Password"
-      />
-    </div>
-    <p style="color: red; margin: 20px"><%= message %></p>
-    <button type="submit" class="btn btn-dark">Login</button>
-  </form>
+<%- include("partials/header") -%>
+<form action="/login" class="text-center" method="POST">
+  <div class="shadow" style="background: #eaebec; margin: 7rem; padding-bottom: 30px; border-radius: 5px;">
+  <svg width="30px" height="30px" src="/sign-in-alt-solid.svg" />
+  <h2 class="text-center padding blue-text">Please Log In</h2>
+
+  <div class="form-group col-4 text-center">
+    <input
+      autofocus
+      type="emailID"
+      style="margin-left: 122%"
+      class="form-control"
+      name="emailID"
+      placeholder="Email Address"
+    />
+  </div>
+  <div class="form-group col-4 text-center">
+    <input
+      type="password"
+      style="margin-left: 122%"
+      class="form-control"
+      name="password"
+      placeholder="Password"
+    />
+  </div>
+
+  <% if (message) { %>
+  <p style="color: red"><%= message %></p>
+  <% } %>
+
+  <button type="submit" class="btn col-2">Login</button>
+</form>
 </div>
-<% } %> <% if (!message) { %>
-<div class="box">
-  <form action="/login" method="POST">
-    <h4 class="padding">Please Log In</h4>
-    <div class="form-group">
-      <label for="emailID">Email ID</label>
-      <input
-        type="emailID"
-        class="form-control"
-        name="emailID"
-        placeholder="abc@xyz.com"
-      />
-    </div>
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input
-        type="password"
-        class="form-control"
-        name="password"
-        placeholder="Password"
-      />
-    </div>
-    <button type="submit" class="btn btn-dark">Login</button>
-  </form>
-</div>
-<% } %> <%- include("partials/footer") -%>
+<%- include("partials/footer") -%>

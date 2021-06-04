@@ -17,6 +17,37 @@ app.use(
   })
 );
 
+var serviceData = [
+  {
+    service: "Phone Answering Services",
+    subservice: "24 Hour Answering Service",
+  },
+  {
+    service: "Phone Answering Services",
+    subservice: "After Hours Answering Service",
+  },
+  {
+    service: "Phone Answering Services",
+    subservice: "Bilingual Answering Service",
+  },
+  {
+    service: "Phone Answering Services",
+    subservice: "Call Overflow Answering Service",
+  },
+  {
+    service: "Phone Answering Services",
+    subservice: "Message Dispatch Service",
+  },
+  {
+    service: "Phone Answering Services",
+    subservice: "On-Call Answering Service",
+  },
+  {
+    service: "Phone Answering Services",
+    subservice: "RSVP Answering Service",
+  },
+];
+
 let connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_UID,
@@ -31,20 +62,11 @@ connection.connect(function (err) {
   console.log("Connected to the MySQL server.");
 });
 
-const services = [
-  {
-    service: "Phone Answering Services",
-    subservice: "24 Hour Answering Service",
-    serviceUrl: "Phone-Answering-Services",
-    subserviceUrl: "24-Hour-Answering-Service",
-  },
-  {
-    service: "Phone Answering Services",
-    subservice: "After Hours Answering Service",
-    serviceUrl: "Phone-Answering-Services",
-    subserviceUrl: "After-Hours-Answering-Service",
-  },
-];
+String.prototype.toProperCase = function () {
+  return this.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+};
 
 app.get("/", (req, res) => {
   res.render("home");
@@ -55,7 +77,7 @@ app.get("/home", (req, res) => {
 });
 
 app.get("/custRep", (req, res) => {
-  res.render("custRep", { message: "" });
+  res.render("custRep", { message: "", serviceData: serviceData });
 });
 
 app.get("/login", (req, res) => {
@@ -64,21 +86,70 @@ app.get("/login", (req, res) => {
 
 app.get("/supervisor", (req, res) => {
   if (isLoggedIn) {
-    res.render("supervisor", { services: services });
+    connection.query(
+      "SELECT SubService, COUNT(*) FROM Requests GROUP BY SubService",
+      (error, result) => {
+        if (error) throw error;
+        else {
+          console.log(result);
+          // res.render("supervisor", { result: result });
+          // res.redirect("supervisor");
+        }
+      }
+    );
+    res.render("supervisor");
   }
   res.render("login", { message: "Please log in to view this page" });
 });
 
-app.get("/supervisor/:param1/:param2", (req, res) => {
-  var service = req.params.param1;
-  var ss = req.params.param2;
-  var subservice = ss.replace(/-/g, " ");
-  console.log(subservice);
+app.get("/supervisor/:service", (req, res) => {
+  var s1 = req.params.service.replace(/-/g, " ");
+  service = s1.toProperCase();
+  console.log(service);
   connection.query(
-    "SELECT * FROM Requests WHERE SubService=" + connection.escape(subservice),
+    "SELECT * FROM Requests WHERE Service=" + connection.escape(service),
     (error, result) => {
-      // console.log(result);
-      res.render("services", { message: result });
+      console.log(result);
+      res.render("requests", { message: result });
+    }
+  );
+});
+
+app.get("/supervisor/:service/:subservice", (req, res) => {
+  var s1 = req.params.service.replace(/-/g, " ");
+  service = s1.toProperCase();
+
+  var ss1 = req.params.subservice.replace(/-/g, " ");
+  subservice = ss1.toProperCase();
+
+  console.log(service, subservice);
+  connection.query(
+    "SELECT * FROM Requests WHERE SubService=" +
+      connection.escape(subservice) +
+      "AND Service=" +
+      connection.escape(service),
+    (error, result) => {
+      res.render("requests", { message: result });
+    }
+  );
+});
+
+app.get("/logout", (req, res) => {
+  isLoggedIn = false;
+  res.redirect("home");
+});
+
+app.get("/editRequest/:rid", (req, res) => {
+  console.log(req.params.rid);
+  connection.query(
+    "SELECT * FROM Requests WHERE RequestID=" +
+      connection.escape(req.params.rid),
+    (error, result) => {
+      if (error) throw error;
+      else {
+        console.log(result);
+        res.render("editRequest", { reqData: result });
+      }
     }
   );
 });
@@ -102,10 +173,10 @@ app.post("/login", (req, res) => {
         } else {
           if (result[0].Type === "S") {
             isLoggedIn = true;
-            res.render("supervisor", { services: services });
+            res.redirect("supervisor");
           } else if (result[0].Type === "CR") {
             isLoggedIn = true;
-            res.render("custRep");
+            res.redirect("custRep");
           }
         }
       }
@@ -114,16 +185,12 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/custRep", (req, res) => {
-  var name = req.body.name;
-  var email = req.body.email;
-  var phno = req.body.phno;
-  var company = req.body.company;
   var service = req.body.service;
   var subservice = req.body.subservice;
   var reqDesc = req.body.reqdesc;
   connection.query(
-    "INSERT INTO Requests (Name, PhNo, EmailID, Company, Service, SubService, Request) VALUES (?)",
-    [[name, phno, email, company, service, subservice, reqDesc]],
+    "INSERT INTO Requests (Service, SubService, Request) VALUES (?)",
+    [[service, subservice, reqDesc]],
     (error, result) => {
       if (error) throw error;
       else {
@@ -150,6 +217,40 @@ app.post("/custRep", (req, res) => {
   );
 });
 
-app.listen(3000, function () {
-  console.log("Server started on port 3000.");
+app.post("/editRequest/:rid", (req, res) => {
+  var updatedDecision = req.body.decision;
+  var reqID = req.params.rid;
+  connection.query(
+    "UPDATE Requests SET Decision=" +
+      connection.escape(updatedDecision) +
+      " WHERE RequestID=" +
+      connection.escape(reqID),
+    (error, result) => {
+      if (error) throw error;
+      else {
+        connection.query(
+          "SELECT Service, SubService FROM Requests WHERE RequestID=" +
+            connection.escape(reqID),
+          (error, result1) => {
+            if (error) throw error;
+            else {
+              var service = result1[0].Service.replace(
+                / +/g,
+                "-"
+              ).toLowerCase();
+              var subservice = result1[0].SubService.replace(
+                / +/g,
+                "-"
+              ).toLowerCase();
+              res.redirect("/supervisor/" + service + "/" + subservice);
+            }
+          }
+        );
+      }
+    }
+  );
+});
+
+app.listen(process.env.PORT || 3000, function () {
+  console.log("Server is running");
 });

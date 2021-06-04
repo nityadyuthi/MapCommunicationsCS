@@ -1,62 +1,33 @@
-<%- include("partials/header") -%>
-<h4 class="padding">Fill out your request</h4>
-<% if (message) { %>
-<h2><%= message %></h2>
+<%- include("partials/header-logged-in") -%> <% if (message) { %>
+<h4><%= message %></h4>
 <% } %> <% if (!message) { %>
+<h4 class="padding">Fill out your request</h4>
 <div class="box">
   <form class="form-inline" method="post">
     <div class="form-group">
-      <label for="name">Full Name</label>
+      <label for="service">Service Type</label>
       <input
         type="text"
-        class="form-control"
-        name="name"
-        id="name"
-        placeholder="Full Name"
-      />
-    </div>
-    <div class="form-group">
-      <label for="email">Email address</label>
-      <input
-        type="email"
-        class="form-control"
-        name="email"
-        id="email"
-        placeholder="name@example.com"
-      />
-    </div>
-    <div class="form-group">
-      <label for="phno">Phone Number</label>
-      <input
-        type="tel"
-        class="form-control"
-        name="phno"
-        id="phno"
-        placeholder="Phone Number"
-      />
-    </div>
-    <div class="form-group">
-      <label for="company">Company</label>
-      <input
-        type="text"
-        class="form-control"
-        name="company"
-        id="company"
-        placeholder="Company"
-      />
-    </div>
-    <div class="form-group">
-      <label for="service">Service</label>
-      <input
-        type="text"
-        class="form-control"
+        class="form-control col-3"
         name="service"
         id="service"
         placeholder="Service"
       />
-    </div>
-    <div class="form-group">
-      <label for="subservice">Sub Service</label>
+      <!-- <select class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+        <option value="Phone Answering Service">Phone Answering Service</option>
+        <option value="Call Center Services">Call Center Services</option>
+        <option value="Virtual Receptionist Services">
+          Virtual Receptionist Services
+        </option>
+        <option value="Alarm Monitoring Services">
+          Alarm Monitoring Services
+        </option>
+      </select> -->
+      <!--  -->
+      <!-- 
+    </div> -->
+    <div class="form-group" style="margin: 0.75rem;">
+      <label for="subservice">Sub Service Type</label>
       <input
         type="text"
         class="form-control"
@@ -67,13 +38,16 @@
     </div>
     <div class="form-group">
       <label for="subservice">Request Description</label>
-      <textarea name="reqdesc" id="reqdesc" cols="30" rows="5">
-Your request</textarea
-      >
+      <textarea
+        name="reqdesc"
+        id="reqdesc"
+        cols="30"
+        rows="5"
+        placeholder="Your Request"
+      ></textarea>
     </div>
     <button type="submit" class="btn btn-dark">Submit</button>
     <% } %>
-    <div class="text-box"><%= message %></div>
   </form>
 </div>
 <%- include("partials/footer") -%>
