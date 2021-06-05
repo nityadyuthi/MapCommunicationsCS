@@ -35,6 +35,10 @@ button,
     background: red;
 }
 
+.btn-blue {
+    background: #0051a3;
+}
+
 ul {
     font-size: 1rem;
     font-weight: 700;
