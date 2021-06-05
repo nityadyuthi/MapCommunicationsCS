@@ -51,6 +51,7 @@ var serviceData = [
 let connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_UID,
+  // port: 8000,
   password: process.env.DB_PW,
   database: process.env.DB_UID,
 });
@@ -129,6 +130,7 @@ app.get("/supervisor/:service/:subservice", (req, res) => {
       "AND Service=" +
       connection.escape(service),
     (error, result) => {
+      console.log(result);
       res.render("requests", { message: result });
     }
   );
@@ -139,20 +141,20 @@ app.get("/logout", (req, res) => {
   res.redirect("home");
 });
 
-app.get("/editRequest/:rid", (req, res) => {
-  console.log(req.params.rid);
-  connection.query(
-    "SELECT * FROM Requests WHERE RequestID=" +
-      connection.escape(req.params.rid),
-    (error, result) => {
-      if (error) throw error;
-      else {
-        console.log(result);
-        res.render("editRequest", { reqData: result });
-      }
-    }
-  );
-});
+// app.get("/editRequest/:rid", (req, res) => {
+//   console.log(req.params.rid);
+//   connection.query(
+//     "SELECT * FROM Requests WHERE RequestID=" +
+//       connection.escape(req.params.rid),
+//     (error, result) => {
+//       if (error) throw error;
+//       else {
+//         console.log(result);
+//         res.render("editRequest", { reqData: result });
+//       }
+//     }
+//   );
+// });
 
 app.post("/login", (req, res) => {
   var email = req.body.emailID;
@@ -184,6 +186,51 @@ app.post("/login", (req, res) => {
   );
 });
 
+async function modelPostReq(requestText, requestID) {
+  try {
+    var userIDTwitter = [];
+    var characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var charactersLength = characters.length;
+    for (var i = 0; i < 6; i++) {
+      userIDTwitter.push(
+        characters.charAt(Math.floor(Math.random() * charactersLength))
+      );
+    }
+    userIDTwitter = userIDTwitter.join("");
+    console.log(userIDTwitter);
+
+    var tweetID = Math.floor(100000 + Math.random() * 900000);
+
+    await axios
+      .post("/https://sa-rocket.herokuapp.com/", {
+        id: userIDTwitter,
+        text: requestText,
+      })
+      .then(function (response) {
+        //TODO: get the 3 emotions and insert it acc to req id.
+        var mainEmotion = Object.keys(response)[0];
+        console.log(response);
+        // connection.query(
+        //   "UPDATE Requests SET Decision=" +
+        //     connection.escape(decision) +
+        //     "WHERE RequestID=" +
+        //     connection.escape(requestID),
+        //   (error, result) => {
+        //     if (error) throw error;
+        //     else {
+        //       console.log(result);
+        //     }
+        //   }
+        // );
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  } catch (err) {
+    console.log(err);
+  }
+}
 app.post("/custRep", (req, res) => {
   var service = req.body.service;
   var subservice = req.body.subservice;
@@ -194,19 +241,9 @@ app.post("/custRep", (req, res) => {
     (error, result) => {
       if (error) throw error;
       else {
-        // await axios
-        //   .post("/mlModelUrl", {
-        //     requestID: result.insertId,
-        //     requestText: reqDesc,
-        //   })
-        //   .then(function (response) {
-        //     console.log(response);
-        //     //TODO: 1. ID the top 3 sentiments. 2. Insert sentiments and classify as urgent/not.
-        //   })
-        //   .catch(function (error) {
-        //     console.log(error);
-        //   });
-        // console.log(result.insertId);
+        modelPostReq(reqDesc);
+
+        console.log(result.insertId);
         res.render("custRep", {
           message:
             "Your query has been submitted. Our representatives will get back to you shortly. The request ID is:" +
@@ -217,38 +254,68 @@ app.post("/custRep", (req, res) => {
   );
 });
 
-app.post("/editRequest/:rid", (req, res) => {
-  var updatedDecision = req.body.decision;
-  var reqID = req.params.rid;
+// app.post("/editRequest/:rid", (req, res) => {
+//   var updatedDecision = req.body.decision;
+//   var reqID = req.params.rid;
+//   connection.query(
+//     "UPDATE Requests SET Decision=" +
+//       connection.escape(updatedDecision) +
+//       " WHERE RequestID=" +
+//       connection.escape(reqID),
+//     (error, result) => {
+//       if (error) throw error;
+//       else {
+//         connection.query(
+//           "SELECT Service, SubService FROM Requests WHERE RequestID=" +
+//             connection.escape(reqID),
+//           (error, result1) => {
+//             if (error) throw error;
+//             else {
+//               var service = result1[0].Service.replace(
+//                 / +/g,
+//                 "-"
+//               ).toLowerCase();
+//               var subservice = result1[0].SubService.replace(
+//                 / +/g,
+//                 "-"
+//               ).toLowerCase();
+//               res.redirect("/supervisor/" + service + "/" + subservice);
+//             }
+//           }
+//         );
+//       }
+//     }
+//   );
+// });
+
+app.post("/supervisor/:service", (req, res) => {
+  var s1 = req.params.service.replace(/-/g, " ");
+  service = s1.toProperCase();
+  console.log(service);
   connection.query(
-    "UPDATE Requests SET Decision=" +
-      connection.escape(updatedDecision) +
-      " WHERE RequestID=" +
-      connection.escape(reqID),
+    "SELECT * FROM Requests WHERE Service=" + connection.escape(service),
     (error, result) => {
-      if (error) throw error;
-      else {
-        connection.query(
-          "SELECT Service, SubService FROM Requests WHERE RequestID=" +
-            connection.escape(reqID),
-          (error, result1) => {
-            if (error) throw error;
-            else {
-              var service = result1[0].Service.replace(
-                / +/g,
-                "-"
-              ).toLowerCase();
-              var subservice = result1[0].SubService.replace(
-                / +/g,
-                "-"
-              ).toLowerCase();
-              res.redirect("/supervisor/" + service + "/" + subservice);
-            }
-          }
-        );
-      }
+      console.log(result);
+      res.render("requests", { message: result });
     }
   );
+});
+
+app.post("/supervisor/:service/:subservice", (req, res) => {
+  service = req.params.service;
+  subservice = req.params.subservice;
+  var requestID = req.body.requestID;
+  connection.query("INSERT INTO RetrainData() VALUES()", (error, result) => {
+    if (error) throw error;
+    else {
+      res.redirect("/supervisor/" + service + "/" + subservice);
+    }
+  });
+});
+
+app.get("/retrain", (req, res) => {
+  //TODO: what data is req for retraining and in what format
+  axios.get("https://sa-rocket.herokuapp.com/retrain/");
 });
 
 app.listen(process.env.PORT || 3000, function () {

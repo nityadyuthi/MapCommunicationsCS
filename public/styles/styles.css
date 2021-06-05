@@ -28,6 +28,11 @@ button,
     background: rgb(255 85 26);
     color: aliceblue;
     font-weight: 700 !important;
+    border: none;
+}
+
+.btn-red {
+    background: red;
 }
 
 ul {
