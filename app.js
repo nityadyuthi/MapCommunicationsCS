@@ -139,7 +139,7 @@ app.post("/login", (req, res) => {
 async function modelPostReq(requestText, requestID) {
   try {
     await axios
-      .post("https://sa-rocket.herokuapp.com/", {
+      .post("https://sa-rocket2.herokuapp.com/predict", {
         text: requestText,
       })
       .then(function (response) {
@@ -200,7 +200,7 @@ app.post("/custRep", (req, res) => {
         modelPostReq(reqDesc, result.insertId);
         res.render("custRep", {
           message:
-            "Your query has been submitted. Our representatives will get back to you shortly. The request ID is:" +
+            "Your query has been submitted. Our representatives will get back to you shortly. The request ID is: " +
             result.insertId,
         });
       }
