@@ -54,7 +54,6 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/supervisor", (req, res) => {
-  isLoggedIn = true;
   if (isLoggedIn) {
     connection.query("SELECT * FROM Services", (error, result) => {
       if (error) throw error;
