@@ -1,0 +1,104 @@
+<%- include("partials/header-retrain") -%>
+<div class="padding m-3">
+  <nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <a class="nav-item nav-link active" id="phone-answering-services-tab" data-toggle="tab"
+        href="#phone-answering-services">
+        <h5>Phone Answering Services</h5>
+      </a>
+      <a class="nav-item nav-link" id="call-center-services-tab" data-toggle="tab" href="#call-center-services">
+        <h5>Call Center Services</h5>
+      </a>
+      <a class="nav-item nav-link" id="virtual-receptionist-services-tab" data-toggle="tab"
+        href="#virtual-receptionist-services">
+        <h5>Virtual Receptionist Services</h5>
+      </a>
+      <a class="nav-item nav-link" id="alarm-monitoring-services" href="/supervisor/alarm-monitoring-services/">
+        <h5>Alarm Monitoring Services</h5>
+      </a>
+    </div>
+  </nav>
+  <!-- Phone Ans Services -->
+  <div class="tab-content">
+    <div class="tab-pane fade show active padding" id="phone-answering-services">
+      <table class="table table-hover table-bordered m-3" style="margin-right: 30px">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Sub Request</th>
+            <th scope="col">Number of Requests Raised</th>
+            <th scope="col">Number of Requests flagged as Urgent</th>
+          </tr>
+        </thead>
+        <% for( let i = 0; i < data.length; i++) { %>
+        <tbody>
+          <% if (data[i].Service=="Phone Answering Services") { %>
+          <tr>
+            <td>
+              <a href="<%= data[i].URL %> "><%= data[i].SubService %></a>
+            </td>
+            <td><%= data[i].Requests %></td>
+            <td><%= data[i].UrgRequests %></td>
+          </tr>
+          <% } %>
+        </tbody>
+        <% } %>
+      </table>
+    </div>
+    <!-- Call Center Services  -->
+    <div class="tab-pane fade padding m-4" id="call-center-services">
+      <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Sub Request</th>
+            <th scope="col">Number of Requests Raised</th>
+            <th scope="col">Number of Requests flagged as Urgent</th>
+          </tr>
+        </thead><% for( let i = 0; i < data.length; i++) { %>
+        <tbody>
+          <% if (data[i].Service=="Call Center Services") { %>
+          <tr>
+            <td>
+              <a href="<%= data[i].URL %> "><%= data[i].SubService %></a>
+            </td>
+            <td><%= data[i].Requests %></td>
+            <td><%= data[i].UrgRequests %></td>
+          </tr>
+          <% } %>
+        </tbody>
+        <% } %>
+      </table>
+    </div>
+    <!-- Virtual Receptionist Services  -->
+    <div class="tab-pane fade padding" id="virtual-receptionist-services">
+      <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Sub Request</th>
+            <th scope="col">Number of Requests Raised</th>
+            <th scope="col">Number of Requests flagged as Urgent</th>
+          </tr>
+        </thead>
+        <% for( let i = 0; i < data.length; i++) { %>
+        <tbody>
+          <% if (data[i].Service=="Call Center Services") { %>
+          <tr>
+            <td>
+              <a href="<%= data[i].URL %> "><%= data[i].SubService %></a>
+            </td>
+            <td><%= data[i].Requests %></td>
+            <td><%= data[i].UrgRequests %></td>
+          </tr>
+          <% } %>
+        </tbody>
+        <% } %>
+      </table>
+    </div>
+  </div>
+  <div>
+    <%- include("partials/pieChart", {chartData: chartData, id: "req", title: "Distribution of Requests in Phone Answering Services"}) -%>
+  </div>
+  <div>
+    <%- include("partials/pieChart", {chartData: urgChartData, id: "urgReq", title: "Distribution of Number of Urgent Requests in Phone Answering Services"}) -%>
+  </div>
+</div>
+<%- include("partials/footer") -%>

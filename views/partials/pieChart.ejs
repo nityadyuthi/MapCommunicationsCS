@@ -1,0 +1,40 @@
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+        google.charts.setOnLoadCallback(drawChart);
+
+        // console.log(arr);
+
+        function drawChart() {
+            var str = "<%= chartData %>"
+            let arr = str.split(",");
+            let arr1 = [];
+            for (let i = 0; i < arr.length; i += 2) {
+                arr1.push([arr[i], parseInt(arr[i + 1])]);
+            }
+            var data = google.visualization.arrayToDataTable(arr1, ["emotion", "value"]);
+
+            var options = {
+                title: "<%= title %>"
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById("<%= id %>"));
+
+            chart.draw(data, options);
+        }
+    </script>
+
+</head>
+
+<body>
+    <div id="<%= id %>" style="width: 50%; height: 50%"></div>
+</body>

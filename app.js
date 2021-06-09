@@ -54,20 +54,58 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/supervisor", (req, res) => {
+  isLoggedIn = true;
   if (isLoggedIn) {
-    connection.query(
-      "SELECT SubService, COUNT(*) FROM Requests GROUP BY SubService",
-      (error, result) => {
-        if (error) throw error;
-        else {
-          console.log(result);
-        }
+    connection.query("SELECT * FROM Services", (error, result) => {
+      if (error) throw error;
+      else {
+        connection.query(
+          "SELECT Service, SUM(Requests) AS sum, SUM(UrgRequests) AS urgSum FROM `Services` GROUP BY(Service)",
+          (err, result1) => {
+            // console.log(result1);
+            let arr = [],
+              urgArr = [];
+
+            result1.forEach((ele) => {
+              arr.push(ele.Service, ele.sum);
+              urgArr.push(ele.Service, ele.urgSum);
+            });
+
+            // console.log("array", arr);
+            res.render("requestData", {
+              data: result,
+              chartData: arr,
+              urgChartData: urgArr,
+            });
+          }
+        );
+        // console.log(result);
       }
-    );
-    res.render("supervisor");
-  }
-  res.render("login", { message: "Please log in to view this page" });
+    });
+    // res.render("supervisor");
+  } else res.redirect("login");
 });
+
+async function getAllEmotions(request) {
+  await axios
+    .post("https://sa-rocket2.herokuapp.com/predictall", {
+      text: request,
+    })
+    .then(function (response) {
+      var allEmotions = [];
+      // for (let i = 0; i < response.data.length; i++) {
+      //   allEmotions.push(response.data[i], response.data[response.data[i]]);
+      // }
+      console.log(response.data);
+      Object.keys(response.data).forEach((key) => {
+        allEmotions.push(key, response.data[key]);
+      });
+      return allEmotions;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
 
 app.get("/supervisor/:service", (req, res) => {
   var s1 = req.params.service.replace(/-/g, " ");
@@ -76,7 +114,31 @@ app.get("/supervisor/:service", (req, res) => {
   connection.query(
     "SELECT * FROM Requests WHERE Service=" + connection.escape(service),
     (error, result) => {
-      res.render("requests", { message: result });
+      // console.log(result);
+
+      // for (let i = 0; i < result.length; i++) {
+
+      axios
+        .post("https://sa-rocket2.herokuapp.com/predictall", {
+          text: result[0].Request,
+        })
+        .then(function (response) {
+          var allEmotions = [];
+          // for (let i = 0; i < response.data.length; i++) {
+          //   allEmotions.push(response.data[i], response.data[response.data[i]]);
+          // }
+          console.log(response.data);
+          Object.keys(response.data).forEach((key) => {
+            allEmotions.push(key, response.data[key]);
+          });
+          result[0].allEmotions = allEmotions;
+          res.render("requests", { message: result });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      // }
+      console.log(result);
     }
   );
 });
@@ -95,7 +157,7 @@ app.get("/supervisor/:service/:subservice", (req, res) => {
       "AND Service=" +
       connection.escape(service),
     (error, result) => {
-      console.log(result);
+      // console.log(result);
       res.render("requests", { message: result });
     }
   );
@@ -308,10 +370,11 @@ app.post("/supervisor/:service/:subservice", (req, res) => {
     }
   );
 });
+// var url = "http://da1bb536e2ed.ngrok.io/";
 
 app.get("/retrain", (req, res) => {
   //TODO: what data is req for retraining and in what format
-  axios.get("https://sa-rocket.herokuapp.com/retrain/");
+  axios.get("http://653dcffdc6dd.ngrok.io/retrain");
   isLoggedIn = true;
   console.log("model is retraining data. redirecting to supervisor page");
   res.redirect("/supervisor");
